@@ -1,0 +1,32 @@
+name: GitHub Activities
+description: Updates README with the recent GitHub activity of a user
+author: duchuy1452
+
+inputs:
+  USERNAME:
+    description: 'Your GitHub username'
+    required: false
+    default: ${{ github.repository_owner }}
+  
+  MAX_LINES:
+    description: 'Maximum number of activity lines to show'
+    required: false
+    default: '5'
+  
+  COMMIT_MSG:
+    description: 'Commit message for README updates'
+    required: false
+    default: ':zap: Update README with the recent activity'
+  
+  README_PATH:
+    description: 'Path to README file'
+    required: false
+    default: './README.md'
+
+branding:
+  color: 'green'
+  icon: 'activity'
+
+runs:
+  using: node20
+  main: dist/index.js
