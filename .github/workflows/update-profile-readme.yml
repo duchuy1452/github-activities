@@ -1,0 +1,62 @@
+name: Update Profile README with GitHub Activity
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # Run every 6 hours
+  workflow_dispatch:       # Allow manual trigger
+
+permissions:
+  contents: read           # Read permission for current repo
+
+jobs:
+  update-profile-readme:
+    runs-on: ubuntu-latest
+    name: Update duchuy1452 profile README with recent GitHub activity
+    
+    steps:
+      - name: Checkout profile repository
+        uses: actions/checkout@v4
+        with:
+          repository: duchuy1452/duchuy1452
+          token: ${{ secrets.PROFILE_TOKEN }}
+          fetch-depth: 0
+      
+      - name: Checkout action repository
+        uses: actions/checkout@v4
+        with:
+          repository: duchuy1452/github-activity-readme
+          path: ./action
+          token: ${{ secrets.PROFILE_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies and build action
+        run: |
+          cd ./action
+          npm ci
+          npm run build
+      
+      - name: Update Profile README with GitHub Activity
+        uses: ./action
+        with:
+          USERNAME: duchuy1452
+          MAX_LINES: '5'
+          COMMIT_MSG: '🚀 Update README with latest GitHub activity'
+          README_PATH: './README.md'
+        env:
+          ACTIVITY_TOKEN: ${{ secrets.PROFILE_TOKEN }}
+      
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🚀 Update README with latest GitHub activity"
+            git push
+          fi 

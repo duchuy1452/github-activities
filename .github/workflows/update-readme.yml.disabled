@@ -34,7 +34,7 @@ jobs:
       - name: Update README with GitHub Activity
         uses: ./
         with:
-          USERNAME: ${{ github.repository_owner }}
+          USERNAME: duchuy1452
           MAX_LINES: '5'
           COMMIT_MSG: '🚀 Update README with latest GitHub activity'
         env:
